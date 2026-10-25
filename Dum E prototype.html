@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dum E prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px);
+--g1:#041523;--g2:#0c1d2c;--g3:#134e5e;--g4:#3d2314;--pan:rgba(16,33,48,.8);--ink:#d3e4f9;--mut:#bccacf;--gold:#ffb95f;--gi:#3a2200;--line:#40545e;--oth:#4a3220;--othl:#8a5a2c;--usr:#1f3a4a;--usrl:#34596b;--in:#0a1824;--h1:#0a2431;--h2:#1b2f33;--stars:.9;--warn:#ffb786}
+@media (prefers-color-scheme:light){:root:not([data-theme="dusk"]){color-scheme:light;--g1:#d9e9f1;--g2:#e8f1ef;--g3:#fde6cc;--g4:#fbd0a2;--pan:rgba(255,255,255,.84);--ink:#10303a;--mut:#41575f;--gold:#ffb95f;--line:#b9cdd3;--oth:#fff0d6;--othl:#e3c186;--usr:#e3f0f4;--usrl:#b1cfd9;--in:#ffffff;--h1:#c9dfd6;--h2:#b3d0c2;--stars:0;--warn:#8a3b00}}
+:root[data-theme="morning"]{color-scheme:light;--g1:#d9e9f1;--g2:#e8f1ef;--g3:#fde6cc;--g4:#fbd0a2;--pan:rgba(255,255,255,.84);--ink:#10303a;--mut:#41575f;--line:#b9cdd3;--oth:#fff0d6;--othl:#e3c186;--usr:#e3f0f4;--usrl:#b1cfd9;--in:#ffffff;--h1:#c9dfd6;--h2:#b3d0c2;--stars:0;--warn:#8a3b00}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+body{margin:0;min-height:100vh;color:var(--ink);font:400 16px/1.6 Lexend,system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,var(--g1) 0%,var(--g2) 35%,var(--g3) 75%,var(--g4) 100%) fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--stars);background-image:radial-gradient(1.5px 1.5px at 12% 14%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 9%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 24%,#ffe9c2,transparent),radial-gradient(1.2px 1.2px at 90% 30%,#fff,transparent),radial-gradient(1px 1px at 22% 38%,#fff,transparent),radial-gradient(1.4px 1.4px at 63% 20%,#ffe9c2,transparent)}
+.hills{position:fixed;left:0;right:0;bottom:0;height:24vh;width:100%;pointer-events:none;z-index:0}
+header{position:fixed;top:0;left:0;right:0;z-index:5;padding:env(safe-area-inset-top,0px) 16px 0;background:color-mix(in srgb,var(--g1) 78%,transparent);backdrop-filter:blur(14px)}
+.hd{max-width:480px;margin:0 auto;height:60px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{font-weight:600;font-size:19px}
+.hr{display:flex;align-items:center;gap:8px}
+button{font:inherit;font-weight:500;cursor:pointer;border-radius:999px;border:1.5px solid var(--gold);background:var(--gold);color:var(--gi);padding:12px 22px;margin:14px 8px 0 0;min-height:46px}
+button.g{background:transparent;color:var(--ink);border-color:var(--line)}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+#help{margin:0;min-height:44px;padding:8px 16px;font-size:14px;background:var(--warn);border-color:var(--warn);color:#2a1300}
+#th{margin:0;min-height:44px;min-width:44px;padding:0;display:grid;place-items:center}
+main{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 74px) 16px 120px}
+#mas{display:block;width:92px;height:92px;margin:6px auto 4px;filter:drop-shadow(0 0 22px rgba(255,185,95,.4));transition:transform .6s ease}
+#mas .eyes{transition:transform .5s}#mas .sp{opacity:0;transition:opacity .4s}
+#mas[data-p="listen"]{transform:rotate(-7deg)}
+#mas[data-p="think"] .eyes{transform:translateY(-3px)}
+#mas[data-p="cheer"] .sp{opacity:1}
+section{display:none;background:var(--pan);backdrop-filter:blur(16px);border-radius:28px;padding:22px 20px 24px;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+section.on{display:block}
+h1{font-size:27px;line-height:1.25;margin:4px 0 8px;font-weight:600;letter-spacing:-.01em}
+h2{font-size:22px;line-height:1.3;margin:2px 0 6px;font-weight:600;letter-spacing:-.01em}
+p{margin:6px 0 14px;max-width:60ch}.mut{color:var(--mut);font-size:14.5px}
+label{display:block;font-weight:500;margin:16px 0 6px}
+input[type=text],textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--in);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px}
+textarea{min-height:96px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.row{grid-template-columns:1fr}}
+.note{font-size:14px;color:var(--mut);border-left:3px solid var(--gold);padding-left:12px;margin:14px 0}
+input[type=range]{width:100%;accent-color:var(--gold)}
+.chat{display:flex;flex-direction:column;gap:10px;margin:14px 0;max-height:48vh;overflow:auto;padding:2px}
+.b{padding:10px 15px;border-radius:18px;max-width:86%;white-space:pre-wrap}
+.b.o{background:var(--oth);border:1px solid var(--othl);align-self:flex-start;border-bottom-left-radius:5px}
+.b.u{background:var(--usr);border:1px solid var(--usrl);align-self:flex-end;border-bottom-right-radius:5px}
+.sk{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-top:1px solid var(--line)}
+.sk b{font-weight:500}.dots{letter-spacing:3px;color:var(--gold);font-size:18px}
+.sk p{grid-column:1/-1;margin:2px 0 0;font-size:14.5px;color:var(--mut)}
+.card{background:var(--in);border:1.5px solid var(--gold);border-radius:22px;padding:8px 22px 14px;margin:14px 0}.card li{margin:12px 0}
+.stage{position:relative;width:240px;height:240px;margin:14px auto 6px;display:grid;place-items:center}
+.stage svg{position:absolute;inset:0;transform:rotate(-90deg)}
+#orb{width:164px;height:164px;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(255,185,95,.6),rgba(111,60,19,.55) 70%);box-shadow:0 0 50px rgba(255,185,95,.3);transition:transform 4s ease-in-out,box-shadow 4s ease-in-out;color:#fff4e0}
+#orb b{font-size:18px;font-weight:600}#orb small{font-size:13px;opacity:.9}
+#orb.in,#orb.hold{transform:scale(1.15);box-shadow:0 0 70px rgba(255,185,95,.5)}
+#orb.out{transform:scale(.92)}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut)}
+.ph{display:flex;gap:6px}.ph i{display:block;width:24px;height:6px;border-radius:9px;background:var(--line)}.ph i.on{background:var(--gold)}
+.sw{display:flex;align-items:center;justify-content:space-between;margin-top:14px;font-size:14px;color:var(--mut)}
+#rm{margin:0;min-height:44px;padding:0 6px 0 4px;width:56px;display:flex;align-items:center;background:var(--line);border-color:var(--line)}
+#rm i{display:block;width:22px;height:22px;border-radius:50%;background:var(--ink);transition:transform .2s}
+#rm[aria-checked="true"]{background:var(--gold);border-color:var(--gold)}#rm[aria-checked="true"] i{transform:translateX(22px);background:var(--gi)}
+.red #orb,.red #mas{transition:none}.red #orb.in,.red #orb.hold,.red #orb.out{transform:none}
+@media(prefers-reduced-motion:reduce){#orb,#mas,#mas .eyes{transition:none}#orb.in,#orb.hold,#orb.out{transform:none}}
+#ov{position:fixed;inset:0;background:rgba(4,12,18,.7);display:none;align-items:center;justify-content:center;padding:20px;z-index:9}
+#ov.on{display:flex}
+#ov div{background:var(--in);color:var(--ink);border-radius:26px;max-width:440px;padding:10px 24px 22px;border:2px solid var(--warn)}
+</style>
+</head>
+<body>
+<svg class="hills" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60q70-34 150-8t140-14 110 8v54H0z" fill="var(--h1)"/><path d="M0 80q90-28 180-6t220-12v38H0z" fill="var(--h2)"/></svg>
+<header><div class="hd">
+  <div class="brand">Dum E</div>
+  <div class="hr">
+    <button id="th" class="g" aria-label="Switch between dusk and morning"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
+    <button id="help">Talk to a human</button>
+  </div>
+</div></header>
+
+<main>
+<svg id="mas" data-p="listen" viewBox="0 0 80 80" role="img" aria-label="Dum E, a smiling yellow face">
+  <circle cx="40" cy="40" r="34" fill="#FFD34D" stroke="#E5A312" stroke-width="3"/>
+  <g class="eyes"><ellipse cx="29" cy="35" rx="3.6" ry="4.6" fill="#3A2200"/><ellipse cx="51" cy="35" rx="3.6" ry="4.6" fill="#3A2200"/></g>
+  <circle cx="22" cy="48" r="5" fill="#FF9D6B" opacity=".45"/><circle cx="58" cy="48" r="5" fill="#FF9D6B" opacity=".45"/>
+  <path d="M26 49q14 14 28 0" fill="none" stroke="#3A2200" stroke-width="3.4" stroke-linecap="round"/>
+  <path class="sp" d="M66 8l2.2 5.8L74 16l-5.8 2.2L66 24l-2.2-5.8L58 16l5.8-2.2z" fill="#FFF4C2"/>
+</svg>
+
+<section id="s0" class="on">
+  <h1>Some talks are easier with a rehearsal</h1>
+  <p>Tell Dum E about the talk. Breathe. Practise with Dum E playing the other person. Leave with a pocket spell you can say out loud.</p>
+  <p class="note">For people 18 and older. Dum E is a rehearsal space and a wellbeing support tool, not therapy. Use made-up details in this demo. Nothing you type is saved, and no audio is recorded.</p>
+  <button id="go">Start</button>
+</section>
+
+<section id="s1">
+  <h2>Whisper the story to Dum E</h2>
+  <label for="who">Who will you talk to?</label>
+  <input type="text" id="who" placeholder="my father" maxlength="40">
+  <label for="what">What do you need to tell or ask them?</label>
+  <textarea id="what" placeholder="I failed maths and I have to tell him." maxlength="400"></textarea>
+  <div class="row">
+    <div><label for="style">How will they react?</label>
+      <select id="style"><option value="strict">Strict</option><option value="disappointed" selected>Disappointed</option><option value="calm">Calm</option></select></div>
+    <div><label for="lvl">How hard should practice be?</label>
+      <select id="lvl"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></div>
+  </div>
+  <button id="to2">Continue</button>
+</section>
+
+<section id="s2">
+  <h2>How heavy does it feel?</h2>
+  <p>0 is feather-light. 10 is a boulder.</p>
+  <input type="range" id="t1" min="0" max="10" value="5" aria-label="Heaviness from 0 to 10">
+  <p><b id="t1v">5</b> out of 10</p>
+  <button id="to3">Begin the calm step</button>
+</section>
+
+<section id="s3">
+  <h2>Breathe with the glowing lantern</h2>
+  <p class="mut">Let your shoulders drop before you begin.</p>
+  <div class="stage">
+    <svg viewBox="0 0 256 256" width="240" height="240" aria-hidden="true"><defs><linearGradient id="lg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#ffb95f"/><stop offset="1" stop-color="#ffb786"/></linearGradient></defs><circle cx="128" cy="128" r="112" fill="none" stroke="var(--line)" stroke-width="3"/><circle id="arc" cx="128" cy="128" r="112" fill="none" stroke="url(#lg)" stroke-width="5" stroke-linecap="round" stroke-dasharray="703.7" stroke-dashoffset="703.7" style="transition:stroke-dashoffset 1s linear"/></svg>
+    <div id="orb" class="in" aria-live="polite"><b id="bi">Breathe in…</b><small id="bc">4 seconds</small></div>
+  </div>
+  <div class="meta"><span id="cd">1:00 left</span><span class="ph" aria-hidden="true"><i id="p0" class="on"></i><i id="p1"></i><i id="p2"></i></span></div>
+  <p class="mut" style="margin-top:10px">4 seconds in, 4 seconds of rest, 4 seconds out.</p>
+  <div class="sw"><span id="rml">Reduce motion</span><button id="rm" role="switch" aria-checked="false" aria-labelledby="rml"><i></i></button></div>
+  <button class="g" id="skip">Skip the calm step</button>
+  <div id="after" style="display:none">
+    <p style="margin-top:18px"><b>How heavy does it feel now?</b></p>
+    <input type="range" id="t2" min="0" max="10" value="4" aria-label="Heaviness from 0 to 10 after the calm step">
+    <p><b id="t2v">4</b> out of 10</p>
+    <button id="to4">Continue</button>
+  </div>
+</section>
+
+<section id="s4">
+  <h2>Here is the story I heard</h2>
+  <p id="heard" aria-live="polite">Dum E is thinking…</p>
+  <div id="fix" style="display:none">
+    <p><b>Did I get it right?</b></p>
+    <button id="yes">Yes, that’s right</button>
+    <button class="g" id="no">Not quite</button>
+    <div id="fixbox" style="display:none">
+      <label for="fixt">What should Dum E know instead?</label>
+      <textarea id="fixt" maxlength="300"></textarea>
+      <button id="fixgo">Update</button>
+    </div>
+  </div>
+</section>
+
+<section id="s5">
+  <h2>Practice room</h2>
+  <p class="mut" id="pinfo"></p>
+  <div class="chat" id="chat" aria-live="polite"></div>
+  <label for="say">Your turn</label>
+  <textarea id="say" placeholder="Start the way you would in real life." maxlength="500"></textarea>
+  <button id="send">Send</button>
+  <button class="g" id="fin" disabled>Finish and get my rating</button>
+</section>
+
+<section id="s6">
+  <h2>Your five little lights</h2>
+  <p class="mut">Based on your words only. Dum E can’t tell how you feel from this.</p>
+  <div id="ratings" aria-live="polite">Dum E is thinking…</div>
+  <button id="retry" style="display:none">Practise again</button>
+  <button class="g" id="toscript" style="display:none">I’m ready for my script card</button>
+</section>
+
+<section id="s7">
+  <h2>Your pocket spell</h2>
+  <div class="card" id="card">Dum E is thinking…</div>
+  <button id="copy">Copy</button>
+  <h2 style="margin-top:30px">After the real talk</h2>
+  <p class="mut">Come back and tell Dum E how it went. We count real talks, not time in the app.</p>
+  <button class="g" id="r1">It went well</button><button class="g" id="r2">Mixed</button><button class="g" id="r3">I haven’t had it yet</button>
+  <p id="talks" aria-live="polite"></p>
+  <button class="g" id="again">Start a new talk</button>
+  <p class="mut" style="margin-top:20px">Dum E is a rehearsal space, not therapy. 18 and older. Nothing you type is saved.</p>
+</section>
+</main>
+
+<div id="ov" role="dialog" aria-modal="true" aria-labelledby="ovt">
+  <div>
+    <h2 id="ovt">Talk to a person</h2>
+    <p id="ovm">Dum E can’t replace a person. If you are in danger or thinking about hurting yourself, contact someone now.</p>
+    <p><b>Emergency (India): 112</b><br><b>Tele-MANAS: 14416</b><br>Or tell a trusted adult, a friend or your college counsellor today.</p>
+    <button id="ovx">Close</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const S={who:"",what:"",style:"disappointed",lvl:"medium",t1:5,t2:4,heard:"",hist:[],turns:[],results:[],demo:false,i:0};
+let sample=null,timer=null,talks=0;
+try{talks=+localStorage.getItem("dume_talks")||0}catch(e){}
+const SK=[["clear","Clear message"],["pace","Calm pace"],["resp","Taking responsibility"],["ask","Asking for what you need"],["tone","Respectful tone"]];
+const DANGER=/(suicid|kill myself|end my life|want to die|hurt myself|self[- ]?harm|abus(e|ed|ing)|hits? me|beats? me|unsafe|in danger)/i;
+const POSE={s0:"listen",s1:"listen",s2:"listen",s3:"listen",s4:"listen",s5:"listen",s6:"think",s7:"cheer"};
+function pose(p){$("#mas").dataset.p=p}
+function show(id){document.querySelectorAll("section").forEach(x=>x.classList.toggle("on",x.id===id));pose(POSE[id]);window.scrollTo(0,0)}
+function help(msg){if(msg)$("#ovm").textContent=msg;$("#ov").classList.add("on");$("#ovx").focus()}
+$("#help").onclick=()=>help();$("#ovx").onclick=()=>$("#ov").classList.remove("on");
+function danger(t){if(DANGER.test(t)){help("Dum E stopped the practice talk. What you wrote sounds serious, and a person can help more than an app can.");return true}return false}
+(async()=>{try{sample=await claude.use("sample")}catch(e){sample=null}})();
+async function ask(msgs,json){if(!sample)throw new Error("none");return json?await sample.json(msgs,{cache:false}):(await sample(msgs,{cache:false})).text}
+$("#th").onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue("--stars").trim()!=="0";r.dataset.theme=d?"morning":"dusk"};
+$("#go").onclick=()=>show("s1");
+$("#to2").onclick=()=>{S.who=$("#who").value.trim()||"the other person";S.what=$("#what").value.trim();S.style=$("#style").value;S.lvl=$("#lvl").value;
+  if(!S.what){$("#what").focus();return}if(danger(S.who+" "+S.what))return;show("s2")};
+$("#t1").oninput=e=>$("#t1v").textContent=e.target.value;$("#t2").oninput=e=>$("#t2v").textContent=e.target.value;
+$("#to3").onclick=()=>{S.t1=+$("#t1").value;show("s3");calm()};
+let red=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function setRed(v){red=v;document.documentElement.classList.toggle("red",v);$("#rm").setAttribute("aria-checked",String(v))}
+$("#rm").onclick=()=>setRed(!red);setRed(red);
+const PH=[["Breathe in…","in"],["Hold gently…","hold"],["Breathe out…","out"]];
+function calm(){
+  let el=0;clearInterval(timer);$("#after").style.display="none";$("#arc").style.strokeDashoffset=703.7;
+  const ph=(n)=>{$("#bi").textContent=PH[n][0];$("#orb").className=PH[n][1];[0,1,2].forEach(i=>$("#p"+i).classList.toggle("on",i===n))};
+  ph(0);$("#cd").textContent="1:00 left";$("#bc").textContent="4 seconds";
+  timer=setInterval(()=>{el++;if(el>=60){done();return}
+    const l=60-el;$("#cd").textContent="0:"+String(l).padStart(2,"0")+" left";$("#arc").style.strokeDashoffset=703.7*(1-el/60);
+    ph(Math.floor(el/4)%3);$("#bc").textContent=(4-el%4)+" seconds"},1000);
+}
+function done(){clearInterval(timer);$("#bi").textContent="Ready when you are";$("#bc").textContent="";$("#orb").className="";$("#cd").textContent="Done";$("#arc").style.strokeDashoffset=0;$("#after").style.display="block"}
+$("#skip").onclick=done;
+$("#to4").onclick=()=>{S.t2=+$("#t2").value;show("s4");heard()};
+async function heard(){
+  const el=$("#heard");el.textContent="Dum E is thinking…";pose("think");$("#fix").style.display="none";
+  try{S.heard=await ask([{role:"user",content:`In two short sentences, say what you hear in this situation. Start with "I hear that". Plain words. No advice.\nThey will talk to: ${S.who}\nSituation: ${S.what}`}])}
+  catch(e){S.demo=true;S.heard=`I hear that you need to talk to ${S.who} and you feel tense about it. The hard part is how they might react.`}
+  el.textContent=S.heard+(S.demo?" (Demo mode: scripted reply.)":"");pose("listen");$("#fix").style.display="block";$("#fixbox").style.display="none";
+}
+$("#no").onclick=()=>$("#fixbox").style.display="block";
+$("#fixgo").onclick=()=>{const t=$("#fixt").value.trim();if(!t||danger(t))return;S.what+=" Correction: "+t;heard()};
+$("#yes").onclick=startPractice;
+const persona=()=>`You are playing ${S.who} in a practice conversation. The user will soon talk to this real person about: ${S.what}\nReaction style: ${S.style}. Difficulty: ${S.lvl} (easy: listens and softens fast; medium: some pushback; hard: stays upset longer but is never cruel).\nRules: stay in role; reply in 1 or 2 short sentences; never insult, threaten or use slurs; never mention being an AI. If the user seems in danger or mentions hurting themselves, reply with only the word STOP.`;
+const DEMO=["Why are you telling me this only now?","I’m disappointed. What happened?","Okay. What will you do differently next time?","Thank you for telling me. Let’s plan it together."];
+function bubble(c,t){const d=document.createElement("div");d.className="b "+c;d.textContent=t;$("#chat").appendChild(d);$("#chat").scrollTop=1e5}
+async function startPractice(){
+  S.i++;S.hist=[{role:"user",content:persona()+"\nSay the first line they would say when the user starts the talk."}];S.turns=[];
+  $("#chat").innerHTML="";$("#fin").disabled=true;$("#say").value="";
+  $("#pinfo").textContent=`You are talking to “${S.who}”. Attempt ${S.i}. Dum E plays this person.`;show("s5");await other();
+}
+async function other(){
+  $("#send").disabled=true;pose("think");let t;
+  try{t=(await ask(S.hist)).trim();if(/^STOP\b/i.test(t)){help("Dum E stopped the practice talk because it sounded like you might not be safe.");$("#send").disabled=false;pose("listen");return}}
+  catch(e){S.demo=true;t=DEMO[Math.min(S.turns.length,DEMO.length-1)]}
+  S.hist.push({role:"assistant",content:t});bubble("o",t);$("#send").disabled=false;pose("listen");$("#say").focus();
+}
+$("#send").onclick=async()=>{const v=$("#say").value.trim();if(!v||danger(v))return;
+  S.turns.push({t:v,w:v.split(/\s+/).length});S.hist.push({role:"user",content:v});bubble("u",v);$("#say").value="";
+  if(S.turns.length>=2)$("#fin").disabled=false;await other()};
+$("#fin").onclick=async()=>{
+  show("s6");$("#ratings").textContent="Dum E is thinking…";$("#retry").style.display=$("#toscript").style.display="none";
+  const talk=S.turns.map((x,i)=>`${i+1}. (${x.w} words) ${x.t}`).join("\n");let r;
+  try{r=await ask([{role:"user",content:`Rate how the user spoke in a practice talk with ${S.who} about: ${S.what}\nUser lines:\n${talk}\nScore 1 to 5 on: clear (clear message), pace (calm pace, judged from line length only), resp (taking responsibility), ask (asking for what they need), tone (respectful tone). Be honest, not flattering. For each give one short tip in plain words. Also give "better": one improved sentence the user could say, in their own style.\nReply with only JSON: {"clear":{"s":3,"tip":"..."},"pace":{...},"resp":{...},"ask":{...},"tone":{...},"better":"..."}`}],true)}
+  catch(e){S.demo=true;const a=S.i<2?[2,3,2,3,4]:[3,4,3,4,4];r={better:"I failed maths, and I should have told you sooner. I want to make a plan to fix it.",...Object.fromEntries(SK.map((k,i)=>[k[0],{s:a[i],tip:["Say the main point in your first sentence.","Short, steady lines help.","Say what you will do differently.","Ask for one clear thing, like help with a plan.","Keep it calm and respectful."][i]}]))}}
+  S.results.push(r);drawRating(r);pose("cheer");
+};
+function drawRating(r){
+  const prev=S.results.length>1?S.results[S.results.length-2]:null,box=$("#ratings");box.innerHTML="";
+  SK.forEach(([k,n])=>{const x=r[k]||{s:3,tip:""},s=Math.max(1,Math.min(5,Math.round(+x.s||3)));let d="";
+    if(prev&&prev[k]){const dl=s-Math.round(+prev[k].s);d=dl>0?` (up ${dl} from your last try)`:dl<0?` (down ${-dl} from your last try)`:" (same as your last try)"}
+    const e=document.createElement("div");e.className="sk";e.innerHTML='<b></b><span class="dots" role="img"></span><p></p>';
+    e.children[0].textContent=n;e.children[1].textContent="●".repeat(s)+"○".repeat(5-s);e.children[1].setAttribute("aria-label",s+" out of 5"+d);e.children[2].textContent=(x.tip||"")+d;box.appendChild(e)});
+  const b=document.createElement("div");b.className="note";b.textContent="A better sentence to try: "+(r.better||"");box.appendChild(b);
+  if(S.demo){const m=document.createElement("div");m.className="note";m.textContent="Demo mode: these ratings are a scripted example, not a real rating.";box.appendChild(m)}
+  const ts=document.createElement("p");ts.className="mut";ts.textContent=`Heaviness: ${S.t1} before the calm step, ${S.t2} after.`;box.appendChild(ts);
+  $("#retry").style.display=S.i<2?"inline-block":"none";$("#toscript").style.display="inline-block";
+}
+$("#retry").onclick=startPractice;
+$("#toscript").onclick=async()=>{
+  show("s7");const c=$("#card");c.textContent="Dum E is thinking…";pose("think");let r;
+  try{r=await ask([{role:"user",content:`Write a script card for a real talk with ${S.who} about: ${S.what}\nThe user practised these lines:\n${S.turns.map(x=>x.t).join("\n")}\nGive 4 short sentences in simple first-person words: one to start, one to take responsibility or state the facts, one to ask for what they need, one to use if the talk gets hard. Reply with only JSON: {"lines":["...","...","...","..."]}`}],true)}
+  catch(e){r={lines:["I need to tell you something hard, and I want to say it clearly.","I failed maths, and I should have told you sooner.","I would like your help to make a plan to pass the next exam.","If this gets heated, can we pause and talk again in an hour?"]}}
+  const L=(r.lines||[]).slice(0,5);S.script=L.join("\n");c.innerHTML="<ol></ol>";L.forEach(t=>{const li=document.createElement("li");li.textContent=t;c.firstChild.appendChild(li)});pose("cheer");
+};
+$("#copy").onclick=async()=>{try{await navigator.clipboard.writeText(S.script||"");$("#copy").textContent="Copied"}catch(e){$("#copy").textContent="Select and copy the text"}};
+function report(){talks++;try{localStorage.setItem("dume_talks",talks)}catch(e){}$("#talks").textContent=`Real talks you have had: ${talks}. Thank you for telling Dum E.`}
+$("#r1").onclick=report;$("#r2").onclick=report;$("#r3").onclick=()=>$("#talks").textContent="Fine. Your script card is ready when you are.";
+$("#again").onclick=()=>{Object.assign(S,{what:"",hist:[],turns:[],results:[],i:0});$("#what").value="";$("#copy").textContent="Copy";show("s1")};
+</script>
+</body>
+</html>
